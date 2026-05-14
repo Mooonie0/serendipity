@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Serendipity</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cinzel:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --silver: #eee7f5;
+      --soft-silver: rgba(245, 236, 255, 0.82);
+      --purple-glow: rgba(182, 119, 255, 0.28);
+      --deep-purple: #16051f;
+      --almost-black: #020107;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Playfair Display", serif;
+      color: var(--silver);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(122, 54, 171, 0.45), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(91, 29, 140, 0.35), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(45, 14, 70, 0.55), transparent 32%),
+        linear-gradient(135deg, var(--almost-black) 0%, #090412 35%, var(--deep-purple) 70%, #030106 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 8% 18%, rgba(255,255,255,0.95) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 18% 72%, rgba(210,178,255,0.8) 0 1.2px, transparent 2px),
+        radial-gradient(circle at 31% 27%, rgba(255,255,255,0.75) 0 0.8px, transparent 1.8px),
+        radial-gradient(circle at 44% 86%, rgba(190,142,255,0.9) 0 1px, transparent 2px),
+        radial-gradient(circle at 57% 14%, rgba(255,255,255,0.85) 0 1.1px, transparent 2px),
+        radial-gradient(circle at 68% 62%, rgba(220,194,255,0.9) 0 0.9px, transparent 1.9px),
+        radial-gradient(circle at 76% 34%, rgba(255,255,255,0.7) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 88% 78%, rgba(200,160,255,0.85) 0 1.2px, transparent 2px),
+        radial-gradient(circle at 94% 12%, rgba(255,255,255,0.9) 0 0.8px, transparent 1.8px),
+        radial-gradient(circle at 12% 46%, rgba(230,215,255,0.7) 0 0.7px, transparent 1.7px),
+        radial-gradient(circle at 36% 58%, rgba(255,255,255,0.65) 0 1px, transparent 2px),
+        radial-gradient(circle at 62% 91%, rgba(205,164,255,0.75) 0 0.9px, transparent 1.9px),
+        radial-gradient(circle at 83% 51%, rgba(255,255,255,0.8) 0 1px, transparent 2px);
+      opacity: 0.6;
+      animation: twinkle 4.5s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 82%, rgba(255,255,255,0.55) 0 0.6px, transparent 1.6px),
+        radial-gradient(circle at 24% 12%, rgba(196,150,255,0.7) 0 1px, transparent 2px),
+        radial-gradient(circle at 41% 42%, rgba(255,255,255,0.48) 0 0.7px, transparent 1.8px),
+        radial-gradient(circle at 53% 73%, rgba(218,190,255,0.62) 0 0.8px, transparent 1.8px),
+        radial-gradient(circle at 71% 22%, rgba(255,255,255,0.5) 0 0.7px, transparent 1.7px),
+        radial-gradient(circle at 91% 43%, rgba(199,154,255,0.65) 0 1px, transparent 2px),
+        radial-gradient(circle at 97% 88%, rgba(255,255,255,0.5) 0 0.6px, transparent 1.6px),
+        radial-gradient(circle, transparent 45%, rgba(0, 0, 0, 0.72));
+      animation: slowTwinkle 7s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes slowTwinkle {
+      from { opacity: 0.55; }
+      to { opacity: 0.9; }
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.22; }
+      to { opacity: 0.48; }
+    }
+
+    .shooting-star {
+      position: fixed;
+      width: 150px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff, rgba(214, 175, 255, 0.18));
+      opacity: 0;
+      transform: rotate(-25deg);
+      animation: fall 5.8s linear infinite;
+      z-index: 1;
+      filter: drop-shadow(0 0 6px rgba(230, 210, 255, 0.8));
+    }
+
+    .shooting-star::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 12px rgba(235, 220, 255, 0.9);
+    }
+
+    .shooting-star:nth-child(1) { top: 10%; left: 72%; animation-delay: 0s; animation-duration: 5.8s; }
+    .shooting-star:nth-child(2) { top: 24%; left: 92%; animation-delay: 1.1s; animation-duration: 6.4s; }
+    .shooting-star:nth-child(3) { top: 7%; left: 45%; animation-delay: 2.3s; animation-duration: 5.2s; }
+    .shooting-star:nth-child(4) { top: 48%; left: 96%; animation-delay: 3.4s; animation-duration: 6.8s; }
+    .shooting-star:nth-child(5) { top: 18%; left: 110%; animation-delay: 4.5s; animation-duration: 7s; }
+    .shooting-star:nth-child(6) { top: 62%; left: 86%; animation-delay: 1.9s; animation-duration: 6.1s; }
+    .shooting-star:nth-child(7) { top: 34%; left: 78%; animation-delay: 5.2s; animation-duration: 5.5s; }
+    .shooting-star:nth-child(8) { top: 76%; left: 104%; animation-delay: 2.8s; animation-duration: 7.2s; }
+    .shooting-star:nth-child(9) { top: 42%; left: 66%; animation-delay: 6.1s; animation-duration: 6.6s; }
+    .shooting-star:nth-child(10) { top: 14%; left: 96%; animation-delay: 7.3s; animation-duration: 5.9s; }
+
+    @keyframes fall {
+      0% { transform: translate(0, 0) rotate(-25deg); opacity: 0; }
+      10% { opacity: 1; }
+      35% { opacity: 0; }
+      100% { transform: translate(-520px, 240px) rotate(-25deg); opacity: 0; }
+    }
+
+
+    .hint {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 15px;
+      letter-spacing: 1px;
+      color: rgba(245, 235, 255, 0.72);
+      text-align: center;
+    }
+
+    .scene {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glow {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: var(--purple-glow);
+      filter: blur(60px);
+      bottom: 4%;
+      right: 15%;
+      z-index: -1;
+      animation: breathe 4s infinite alternate ease-in-out;
+    }
+
+    .cursor-light {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(183, 121, 255, 0.18), rgba(183, 121, 255, 0.07) 38%, transparent 70%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+      filter: blur(10px);
+      opacity: 0.75;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes breathe {
+      from { transform: scale(0.9); opacity: 0.45; }
+      to { transform: scale(1.15); opacity: 0.75; }
+    }
+
+    .book-wrap {
+      position: relative;
+      width: min(1050px, 94vw);
+      height: min(660px, 80vh);
+      perspective: 2200px;
+      transition: width 0.8s ease;
+    }
+
+    .book-wrap.closed {
+      width: min(520px, 86vw);
+    }
+
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 35px 60px rgba(0, 0, 0, 0.65));
+    }
+
+    .left-side,
+    .cover,
+    .page {
+      position: absolute;
+      top: 0;
+      height: 100%;
+    }
+
+    .left-side {
+      left: 0;
+      width: 50%;
+      border-radius: 18px 0 0 18px;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.45), transparent 18%),
+        radial-gradient(circle at 30% 35%, rgba(154, 79, 221, 0.42), transparent 30%),
+        linear-gradient(135deg, #10061c, #261039 55%, #08030d);
+      border: 1px solid rgba(238, 225, 255, 0.15);
+      box-shadow: inset -18px 0 35px rgba(0, 0, 0, 0.45);
+      padding: 64px 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: opacity 0.4s ease;
+    }
+
+    .cover,
+    .page {
+      right: 0;
+      width: 50%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 1s cubic-bezier(.77, 0, .18, 1), width 0.8s ease, border-radius 0.8s ease;
+      border-radius: 0 18px 18px 0;
+      overflow: hidden;
+    }
+
+    .cover {
+      z-index: 8;
+      width: 52%;
+    }
+
+    .book-wrap.closed .cover {
+      width: 100%;
+      border-radius: 22px;
+    }
+
+    .book-wrap.closed .cover-face {
+      border-radius: 22px;
+    }
+
+    .book-wrap.closed .left-side {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .cover.open {
+      transform: rotateY(-178deg);
+      pointer-events: none;
+    }
+
+    .cover.open .cover-face:first-child,
+    .page.flipped .page-face:first-child {
+      opacity: 0;
+      transition: opacity 0s 0.35s;
+    }
+
+    .cover:not(.open) .cover-face:first-child,
+    .page:not(.flipped) .page-face:first-child {
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .cover-back,
+    .page-back {
+      background:
+        radial-gradient(circle at 45% 35%, rgba(118, 54, 181, 0.22), transparent 35%),
+        radial-gradient(circle at 70% 75%, rgba(198, 142, 255, 0.12), transparent 30%),
+        linear-gradient(135deg, #08030d, #190b26 58%, #040106);
+    }
+
+    .page {
+      z-index: 5;
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page.flipped {
+      transform: rotateY(-178deg);
+    }
+
+    .page.turning .page-face::before,
+    .cover.turning .cover-face::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.16) 42%, transparent 64%);
+      transform: translateX(-100%);
+      animation: pageShine 0.9s ease;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @keyframes pageShine {
+      from { transform: translateX(-110%); opacity: 0; }
+      35% { opacity: 1; }
+      to { transform: translateX(110%); opacity: 0; }
+    }
+
+    .cover-face,
+    .page-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(147, 75, 214, 0.42), transparent 34%),
+        radial-gradient(circle at 70% 80%, rgba(188, 112, 255, 0.18), transparent 26%),
+        linear-gradient(135deg, #0a0411, #1b0b29 58%, #050207);
+      border: 1px solid rgba(235, 220, 255, 0.18);
+      box-shadow: inset 12px 0 35px rgba(255, 255, 255, 0.04), inset -18px 0 35px rgba(0, 0, 0, 0.48);
+      padding: 56px;
+    }
+
+    .cover-back,
+    .page-back {
+      transform: rotateY(180deg);
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.45), transparent 20%),
+        radial-gradient(circle at 60% 30%, rgba(118, 54, 181, 0.36), transparent 33%),
+        linear-gradient(135deg, #0d0616, #211031, #07030c);
+    }
+
+    .left-side::after,
+    .page-face::after,
+    .cover-face::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(224, 205, 255, 0.22);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .cover-content,
+    .page-content,
+    .left-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .page-content {
+      opacity: 0;
+      transform: translateY(14px);
+      filter: blur(5px);
+      transition:
+        opacity 0.9s ease,
+        transform 0.9s ease,
+        filter 0.9s ease;
+    }
+
+    .page.show-text .page-content {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    .moon {
+      font-size: 42px;
+      margin-bottom: 26px;
+      color: #e8dfff;
+      filter: drop-shadow(0 0 18px rgba(212, 175, 255, 0.5));
+    }
+
+    .cover-title,
+    .script-title {
+      font-family: "Allura", cursive;
+      font-weight: 400;
+      color: #e8e1ec;
+      text-shadow: 0 0 25px rgba(235, 223, 255, 0.35);
+    }
+
+    .cover-title {
+      font-size: clamp(64px, 8vw, 112px);
+      margin-bottom: 34px;
+    }
+
+    .script-title {
+      font-size: clamp(58px, 5.5vw, 86px);
+      margin-bottom: 26px;
+    }
+
+    .cover-subtitle,
+    .chapter-label,
+    h1,
+    .page-counter,
+    button.nav {
+      font-family: "Cinzel", serif;
+    }
+
+    .cover-subtitle {
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      font-size: 13px;
+      line-height: 2;
+      color: rgba(240, 230, 255, 0.82);
+    }
+
+    .chapter-label {
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: rgba(235, 220, 255, 0.68);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 2.5vw, 38px);
+      font-weight: 400;
+      color: #f4ecff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 18px rgba(199, 150, 255, 0.22);
+    }
+
+    p {
+      max-width: 440px;
+      font-size: clamp(15px, 1.18vw, 17px);
+      line-height: 1.72;
+      color: rgba(249, 241, 255, 0.84);
+      margin-bottom: 14px;
+      text-align: justify;
+      text-align-last: auto;
+    }
+
+    .divider {
+      width: 130px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245, 235, 255, 0.75), transparent);
+      margin: 22px 0;
+    }
+
+    .quote {
+      font-style: italic;
+      font-size: clamp(15px, 1.18vw, 17px);
+      line-height: 1.72;
+      color: #f5eaff;
+      text-shadow: 0 0 14px rgba(220, 190, 255, 0.28);
+      border-left: 1px solid rgba(235, 220, 255, 0.35);
+      padding-left: 16px;
+    }
+
+    .cover-only-moon {
+      font-size: clamp(76px, 12vw, 150px);
+      margin: 0;
+      color: #eee7f5;
+      filter: drop-shadow(0 0 28px rgba(218, 190, 255, 0.65));
+    }
+
+    .restart-button {
+      margin-top: 28px;
+      border: 1px solid rgba(230, 215, 255, 0.3);
+      background: rgba(255, 255, 255, 0.06);
+      color: #f4ecff;
+      font-family: "Cinzel", serif;
+      letter-spacing: 2px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 22px rgba(146, 77, 219, 0.25);
+      transition: 0.3s ease;
+    }
+
+    .restart-button:hover {
+      transform: translateY(-2px);
+      background: rgba(65, 24, 93, 0.75);
+      box-shadow: 0 0 30px rgba(200, 150, 255, 0.35);
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 26px;
+      width: 100%;
+      left: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 13vw;
+      pointer-events: none;
+    }
+
+    button.nav {
+      pointer-events: auto;
+      border: 1px solid rgba(230, 215, 255, 0.25);
+      background: rgba(28, 10, 45, 0.6);
+      color: #f4ecff;
+      letter-spacing: 2px;
+      padding: 13px 26px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 24px rgba(146, 77, 219, 0.25);
+      transition: 0.3s ease;
+    }
+
+    button.nav:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: rgba(65, 24, 93, 0.75);
+      box-shadow: 0 0 30px rgba(200, 150, 255, 0.35);
+    }
+
+    button.nav:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .page-counter {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      color: rgba(240, 225, 255, 0.8);
+      letter-spacing: 2px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 780px) {
+      body { overflow: auto; }
+      .scene { min-height: 100vh; padding: 110px 14px 90px; }
+      .book-wrap { height: auto; min-height: 640px; }
+      .left-side { display: none; }
+      .cover,
+      .page {
+        width: 100%;
+        right: 0;
+        border-radius: 18px;
+      }
+      .cover.open { display: none; }
+      .page-face,
+      .cover-face { padding: 40px 26px; border-radius: 18px; }
+      .controls { padding: 0 18px; }
+      button.nav { padding: 11px 18px; font-size: 12px; }
+      .hint { top: 82px; width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+  <div class="shooting-star"></div>
+
+  <div class="hint">♡ feito com amor, para você ♡</div>
+
+  <div class="cursor-light" id="cursorLight"></div>
+
+  <main class="scene">
+    <div class="glow"></div>
+
+    <section class="book-wrap closed" id="bookWrap">
+      <div class="book">
+        <div class="left-side">
+          <div class="left-content">
+            <div style="
+              max-width: 340px;
+              color: rgba(245, 235, 255, 0.72);
+              text-align: left;
+            ">
+
+              <div style="
+                display: flex;
+                align-items: flex-end;
+                gap: 6px;
+                margin-bottom: 10px;
+              ">
+                <span style="
+                  font-size: 42px;
+                  line-height: 1;
+                  font-family: 'Playfair Display', serif;
+                  color: #f5eeff;
+                ">
+                  serendipity
+                </span>
+
+                <span style="
+                  font-size: 15px;
+                  opacity: 0.7;
+                  margin-bottom: 5px;
+                  font-style: italic;
+                ">
+                  (s.f.)
+                </span>
+              </div>
+
+              <p style="
+                font-size: 12px;
+                line-height: 1.9;
+                opacity: 0.7;
+                text-align: justify;
+              ">
+                a capacidade de encontrar coisas valiosas
+                ou agradáveis sem estar procurando por elas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cover" id="cover">
+          <div class="cover-face">
+            <div class="cover-content">
+              <div class="cover-only-moon">☾</div>
+            </div>
+          </div>
+          <div class="cover-face cover-back"></div>
+        </div>
+
+        <article class="page active" data-page="1">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="script-title" style="font-family: 'Playfair Display', serif; font-size: clamp(48px, 5vw, 74px); letter-spacing: 1px;">
+                Serendipity
+              </div>
+              <div class="divider"></div>
+              <p class="quote" style="font-family: 'Playfair Display', serif; font-size: 16px;">
+                Talvez seja a providência do universo. Talvez tinha que ser assim.
+              </p>
+            </div>
+          </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="2">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 1</div>
+              <h1>No Meio do Meu Caos</h1>
+              <p>É incrível como nunca estamos preparados para aquilo que o universo está preparando pra gente.</p>
+              <p>Se tivessem me contado que entrar naquela cidade me levaria até você, eu, com toda certeza do mundo, não acreditaria.</p>
+              <p>Naquela época, minha vida parecia um caos silencioso. Eu tentava entender meus próprios pensamentos enquanto fingia que estava tudo bem.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="3">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E, no meio de toda aquela bagunça, eu nunca imaginei que alguém apareceria justamente pra trazer calma.</p>
+              <p>Mas você apareceu.</p>
+              <p>De uma forma leve, quentinha e tão familiar, como se tudo aquilo já estivesse escrito antes mesmo da gente se conhecer.</p>
+              <p>Não teve esforço, não teve pressão… só aconteceu. E acho que foi isso que tornou tudo tão especial.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="4">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Você chegou de mansinho, com seu jeitinho, com suas palavras e essa forma doce de existir.</p>
+              <p>Sem perceber, você foi ganhando espaço nos meus dias, nos meus pensamentos e, principalmente, no meu coração.</p>
+              <p class="quote">E quando eu me dei conta… já estava completamente caidinha por você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="5">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 2</div>
+              <h1>O Jeito Que Teus Olhos Brilham</h1>
+              <p>O céu estrelado é, com toda certeza, uma das minhas paisagens favoritas de admirar.</p>
+              <p>E um dos principais motivos disso é que, toda vez que olho pra ele, eu me lembro de você.</p>
+              <p>Já falei algumas vezes, em pequenas coisas que escrevi pra você, sobre constelações… mas você já parou pra pensar no porquê?</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="6">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Pra mim, seus olhos são como uma grande constelação, cheios de pequenas estrelinhas brilhantes.</p>
+              <p>E eu poderia passar o tempo inteiro olhando pra eles enquanto você fala sobre aquilo que mais gosta: seus novos hiperfocos, seu fascínio por carros, o jeito como programação te deixa empolgado…</p>
+              <p>Você poderia passar horas falando sobre tudo isso, e eu continuaria ouvindo como se fosse a coisa mais interessante do mundo.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="7">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Porque, sinceramente, nada me encanta mais do que ver você sendo apenas você.</p>
+              <p>Ver o brilho nos seus olhos enquanto fala daquilo que ama é uma das coisas mais bonitas que já tive o privilégio de conhecer.</p>
+              <p>Existe algo tão especial na forma como você se anima, na maneira como sua voz muda levemente e como seus olhos parecem brilhar ainda mais sem você perceber.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="8">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E talvez você não saiba ou talvez simplesmente não consiga se enxergar da forma que eu enxergo mas você é muito mais incrível do que imagina.</p>
+              <p class="quote">Você não faz ideia do quanto é forte, do quanto é especial… e do orgulho enorme que sinto de você a cada passinho que dá.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="9">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 3</div>
+              <h1>O Que Seus Olhos Falam</h1>
+              <p>Sabe, durante todo esse ano eu aprendi muita coisa sobre você.</p>
+              <p>Aprendi como o seu tom de voz muda quando alguma brincadeira realmente te incomoda, como o seu TDAH faz com que seja difícil prestar atenção em mais de uma coisa ao mesmo tempo…</p>
+              <p>Mas, acima de tudo, aprendi a enxergar aquilo que você tenta guardar só pra você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="10">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Você pode até achar que não, mas eu percebo quando algo está te deixando ansioso, quando alguma coisa pesa mais do que deveria ou quando você simplesmente não está bem.</p>
+              <p>E, nesses momentos, eu gosto de ficar do seu ladinho, apenas te fazendo companhia até que tudo pareça um pouco mais leve.</p>
+              <p>Porque eu sei que você tenta carregar muita coisa sozinho. E, de certa forma, eu te entendo… eu também sou assim.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="11">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Mas dividir um pouquinho da carga também é uma forma de coragem, sabia?</p>
+              <p>Permitir que alguém cuide de você por um instante não te faz menos forte. Só te faz humano.</p>
+              <p>E acho que, no fundo, tudo o que eu quero dizer com isso é que quero continuar sendo alguém em quem você possa descansar.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="12">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Alguém que respeite o seu silêncio, o seu tempo e todo o esforço que você faz pra continuar seguindo em frente, mesmo quando as coisas ficam difíceis.</p>
+              <p>Quero que você saiba que, quando o mundo parecer pesado demais, você não precisa enfrentar tudo sozinho.</p>
+              <p class="quote">E, se algum dia sentir vontade de falar, desabafar ou simplesmente existir sem precisar fingir que está tudo bem… eu vou estar aqui pra te ouvir.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="13">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 4</div>
+              <h1>Você Tem Gosto de Lar</h1>
+              <p>Em algum momento da sua vida você já se sentiu deslocado? Como se nem mesmo a sua própria casa fosse realmente o seu lugar?</p>
+              <p>Antes da gente se conhecer, eu me sentia muito assim.</p>
+              <p>E não é segredo nenhum que minha casa nunca foi exatamente o lugar mais silencioso do mundo kkkkk.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="14">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Mas, além do barulho, existia também aquela sensação constante de não pertencimento… como se eu estivesse sempre fora do lugar.</p>
+              <p>Como se aquele ambiente nunca tivesse sido realmente meu lar.</p>
+              <p>Durante boa parte da minha vida, eu senti como se não fosse bem-vinda. Como se estivesse apenas existindo ali, mas nunca pertencendo de verdade.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="15">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Mas depois que a gente se conheceu, eu finalmente entendi como é a sensação de se sentir em casa.</p>
+              <p>E talvez o mais curioso sobre isso seja que nem sempre lar é um lugar físico.</p>
+              <p>Às vezes, lar pode ser uma pessoa. Um alguém.</p>
+              <p class="quote">Você tem gosto de lar.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="16">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Você é como um cobertor quentinho em um dia chuvoso. Como aquelas risadas sinceras que fazem a barriga doer de tanto rir.</p>
+              <p>Você tem aquela calma gostosa que faz o mundo parecer menos pesado.</p>
+              <p>E acho que essa foi uma das coisas mais bonitas que você me deu sem nem perceber: a sensação de finalmente pertencer a algum lugar.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="17">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Porque, pela primeira vez em muito tempo, eu senti que podia respirar sem me sentir deslocada.</p>
+              <p class="quote">Como se, depois de tanto procurar um lugar ao qual eu pertencesse… eu tivesse encontrado você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="18">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 5</div>
+              <h1>Nos Meus Pequenos Momentos</h1>
+              <p>Em todos esses anos nessa indústria vital, eu nunca imaginei que olharia pra um carrinho rebaixado com um paredão de som do tamanho do universo e pensaria:</p>
+              <p class="quote">“meu Deus, meu bem iria amar isso aqui” kkkkk.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="19">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E é incrível como, até nas coisas mais bobas, eu consigo encontrar um pedacinho de você.</p>
+              <p>Quando minhas músicas estão no aleatório e toca aquela canção cuja letra inteira me lembra você.</p>
+              <p>Quando olho pras estrelas e elas me fazem lembrar o brilho dos seus olhos.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="20">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Ou até quando compro um joguinho novo e consigo praticamente escutar sua voz me dando sermão porque eu preciso parar de gastar dinheiro kkkkk.</p>
+              <p>Sem perceber, você começou a morar nos meus pequenos momentos.</p>
+              <p>Naquelas partes simples do dia que antes passavam despercebidas, mas que agora carregam um pouquinho de você sem nem tentar.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="21">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Nos pensamentos aleatórios. Nas coisas pequenas. Nos detalhes que, antes, talvez não significassem nada… mas que agora fazem eu sorrir só por me lembrarem você.</p>
+              <p>E talvez amar alguém seja exatamente isso.</p>
+              <p class="quote">Encontrar essa pessoa nas pequenas coisas do cotidiano.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="22">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Nos momentos simples. Nas partes mais comuns da vida e, ainda assim, sentir o coração ficar quentinho só porque ela existe ali, mesmo sem estar.</p>
+              <p>Porque, de alguma forma, você conseguiu transformar a minha rotina em um lugar onde eu sempre encontro você outra vez.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="23">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 6</div>
+              <h1>As Partes Que Você Não Vê</h1>
+              <p>Nós já conversamos sobre isso antes, mas, sinceramente, acho que ainda não foi o suficiente.</p>
+              <p>Porque você ainda não consegue enxergar o quão incrível é… e eu nunca vou me cansar de te lembrar disso.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="24">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Não importa quantas pessoas apontem dedos, digam que você nunca vai ser nada ou tentem fazer você acreditar que não é motivo de orgulho.</p>
+              <p>Isso diz muito mais sobre elas do que sobre você.</p>
+              <p class="quote">Porque quem não consegue enxergar o garoto incrível que tem ao lado são elas.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="25">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Você é uma das pessoas mais esforçadas que eu já conheci.</p>
+              <p>Mesmo cansado, mesmo inseguro, você continua correndo atrás de um futuro melhor, tentando fazer as coisas darem certo e carregando muito mais peso do que deixa transparecer.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="26">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E uma das coisas mais bonitas em você é que, mesmo depois de tudo, ainda tenta enxergar o melhor nas pessoas.</p>
+              <p>Você é gentil. É amável.</p>
+              <p>E mesmo quando tenta se esconder atrás dessa brincadeira de “bandido mau”, eu ainda consigo enxergar o seu lado mais bonito.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="27">
+          <div class="page-face">
+            <div class="page-content">
+              <p>A parte sensível que cuida, que se preocupa, que sente tudo intensamente mesmo fingindo que não.</p>
+              <p>E talvez a vida tenha feito você acreditar que precisa endurecer pra não se machucar.</p>
+              <p>Talvez ela tenha tirado um pouquinho da forma bonita como você enxergava o mundo.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="28">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Mas eu espero que, aos poucos, você consiga enxergar em si mesmo tudo aquilo que eu vejo quando olho pra você.</p>
+              <p class="quote">Porque você merece viver coisas boas sem achar que precisa sofrer pra merecê-las.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="29">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 7</div>
+              <h1>Mesmo Nos Dias Difíceis</h1>
+              <p>Eu sei que nem todos os dias são leves.</p>
+              <p>Existem dias em que o mundo pesa mais nos seus ombros.</p>
+              <p>Dias em que você se fecha um pouco, fica mais quietinho ou tenta carregar tudo sozinho porque acredita que precisa fazer isso.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="30">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E eu sei que, às vezes, você acha que precisa esconder suas partes difíceis.</p>
+              <p>Como se elas não fossem importantes ou como se estivesse tudo bem carregar o mundo sozinho.</p>
+              <p>Mas estar ao lado de alguém nunca foi sobre permanecer apenas nos momentos bons.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="31">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Nunca foi só sobre as risadas, os momentos leves ou as madrugadas felizes.</p>
+              <p>Também é sobre permanecer quando o mundo parece cansativo demais.</p>
+              <p>Sobre segurar sua mão mesmo nos dias em que você sente que não consegue ser a melhor versão de si mesmo.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="32">
+          <div class="page-face">
+            <div class="page-content">
+              <p class="quote">Porque eu amo você por inteiro.</p>
+              <p>Até nas suas inseguranças. Nos dias silenciosos. Nos momentos em que você sente que está difícil demais.</p>
+              <p>E talvez você ainda não perceba isso completamente, mas nunca foi o seu “lado perfeito” que fez eu me apaixonar por você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="33">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Foi o seu jeito. Seu coração. Sua forma de existir.</p>
+              <p class="quote">E mesmo nos dias difíceis… ainda é você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="34">
+          <div class="page-face">
+            <div class="page-content">
+              <div class="chapter-label">Capítulo 8</div>
+              <h1>Meu Coração Encontrou Lugar</h1>
+              <p>Em todos esses anos, eu achava que estava destinada a ser a minha única companhia e que estava tudo bem em me sentir tão sozinha.</p>
+              <p>Não tive boas experiências com o amor, e isso acabou me fazendo acreditar fielmente nessas coisas.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="35">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Antes de você, eu nunca tinha entendido de verdade o que era se sentir tão feliz.</p>
+              <p>E talvez seja estranho pensar nisso agora, depois de tudo que vivemos nesse último ano, porque hoje parece tão natural.</p>
+              <p>Tão natural pensar em você nos meus dias, te incluir nos meus planos ou encontrar conforto até nas suas pequenas manias.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="36">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Mas a verdade é que você mudou muita coisa dentro de mim sem nem perceber.</p>
+              <p>Você transformou o meu caos em calma.</p>
+              <p>Fez meus dias parecerem mais leves e me mostrou que amar alguém não precisa doer pra ser verdadeiro.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="37">
+          <div class="page-face">
+            <div class="page-content">
+              <p>E, olhando pra tudo agora, acho que finalmente entendo porque o universo cruzou nossos caminhos daquela forma.</p>
+              <p class="quote">Porque meu coração precisava encontrar você.</p>
+              <p>Precisava encontrar um lugar onde pudesse descansar sem medo.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="38">
+          <div class="page-face">
+            <div class="page-content">
+              <p>Um lugar onde pudesse existir por completo e, ainda assim, ser amado.</p>
+              <p>E, de alguma forma, no meio de tantas possibilidades, tantas pessoas e tantos caminhos… ele encontrou.</p>
+              <p class="quote">Encontrou você.</p>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+
+        <article class="page" data-page="39">
+          <div class="page-face">
+            <div class="page-content">
+              <p class="quote">E acho que, no fim de tudo, essa sempre foi a minha forma favorita de lar.</p>
+
+              <div style="
+                margin-top: 42px;
+                text-align: center;
+                max-width: 420px;
+                opacity: 0.72;
+              ">
+                <p style="
+                  font-style: italic;
+                  font-size: 13px;
+                  text-align: center;
+                  border: none;
+                  padding: 0;
+                  line-height: 1.8;
+                ">
+                  Para a pessoa que trouxe um universo de estrelas
+                  para o meu mundo tão solitário.
+                </p>
+              </div>
+
+              <button class="restart-button" id="restartBtn" type="button">Voltar ao início</button>
+            </div>
+          </div>
+          <div class="page-face page-back"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="controls">
+    <button class="nav" id="prevBtn" type="button">‹ Voltar</button>
+    <button class="nav" id="nextBtn" type="button">Próxima página ›</button>
+  </div>
+
+  <div class="page-counter" id="counter">capa</div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const bookWrap = document.getElementById("bookWrap");
+      const cover = document.getElementById("cover");
+      const pages = Array.from(document.querySelectorAll(".page"));
+      const nextBtn = document.getElementById("nextBtn");
+      const prevBtn = document.getElementById("prevBtn");
+      const counter = document.getElementById("counter");
+      const cursorLight = document.getElementById("cursorLight");
+      const restartBtn = document.getElementById("restartBtn");
+
+      let current = 0;
+
+      function runSmokeTests() {
+        console.assert(bookWrap instanceof HTMLElement, "Teste: bookWrap precisa existir.");
+        console.assert(cover instanceof HTMLElement, "Teste: cover precisa existir.");
+        console.assert(pages.length > 0, "Teste: precisa existir pelo menos uma página.");
+        console.assert(nextBtn instanceof HTMLButtonElement, "Teste: nextBtn precisa existir.");
+        console.assert(prevBtn instanceof HTMLButtonElement, "Teste: prevBtn precisa existir.");
+        console.assert(counter instanceof HTMLElement, "Teste: counter precisa existir.");
+        console.assert(cursorLight instanceof HTMLElement, "Teste: cursorLight precisa existir.");
+        console.assert(restartBtn instanceof HTMLButtonElement, "Teste: restartBtn precisa existir.");
+      }
+
+      function setPageState(page, pageNumber) {
+        page.classList.remove("active", "flipped", "show-text");
+
+        if (pageNumber === current) {
+          page.classList.add("active");
+        }
+
+        if (pageNumber < current) {
+          page.classList.add("active", "flipped");
+        }
+      }
+
+      function addTurningGlow(element) {
+        if (!element) return;
+        element.classList.add("turning");
+        window.setTimeout(function () {
+          element.classList.remove("turning");
+        }, 950);
+      }
+
+      function updateBook() {
+        if (!bookWrap || !cover || !nextBtn || !prevBtn || !counter) return;
+
+        bookWrap.classList.toggle("closed", current === 0);
+        cover.classList.toggle("open", current > 0);
+
+        pages.forEach(function (page, index) {
+          setPageState(page, index + 1);
+        });
+
+        if (current > 0) {
+          const activePage = pages[current - 1];
+          window.setTimeout(function () {
+            if (activePage && activePage.classList.contains("active")) {
+              activePage.classList.add("show-text");
+            }
+          }, 420);
+        }
+
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === pages.length;
+        counter.textContent = current === 0 ? "capa" : current + " / " + pages.length;
+      }
+
+      function goNext() {
+        if (current < pages.length) {
+          const pageBefore = current > 0 ? pages[current - 1] : cover;
+          current += 1;
+          updateBook();
+          addTurningGlow(pageBefore);
+        }
+      }
+
+      function goPrevious() {
+        if (current > 0) {
+          const pageBefore = current > 1 ? pages[current - 2] : cover;
+          current -= 1;
+          updateBook();
+          addTurningGlow(pageBefore);
+        }
+      }
+
+      nextBtn.addEventListener("click", goNext);
+      prevBtn.addEventListener("click", goPrevious);
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowRight") goNext();
+        if (event.key === "ArrowLeft") goPrevious();
+      });
+
+      document.addEventListener("mousemove", function (event) {
+        if (!cursorLight) return;
+        cursorLight.style.left = event.clientX + "px";
+        cursorLight.style.top = event.clientY + "px";
+      });
+
+      document.addEventListener("mouseleave", function () {
+        if (cursorLight) cursorLight.style.opacity = "0";
+      });
+
+      document.addEventListener("mouseenter", function () {
+        if (cursorLight) cursorLight.style.opacity = "0.75";
+      });
+
+      if (restartBtn) {
+        restartBtn.addEventListener("click", function () {
+          current = 0;
+          updateBook();
+        });
+      }
+
+
+      runSmokeTests();
+      updateBook();
+    });
+  </script>
+</body>
+</html>
